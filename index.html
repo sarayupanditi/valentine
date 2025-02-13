@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Surprise</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="name-page">
+        <h1>Welcome! 💕</h1>
+        <p>Please enter your name to continue this sweet journey... 😊</p>
+        <input type="text" id="user-name-input" placeholder="Enter your name" class="input-box">
+        <button class="btn" onclick="startStory()">Start</button>
+    </div>
+
+    <div id="story-page" style="display: none;">
+        <p id="story-text">
+            Hey <span id="user-name"></span>, It was Valentine’s Day, and Mia had no plans—again. While everyone around her was busy making dinner reservations and buying flowers, she was content sipping her favorite caramel latte at her usual corner table in Café Amour, the quaint little coffee shop that had become her second home.
+
+That’s when he walked in—Daniel. Tall, charming, with the kind of smile that could melt snow. Mia had seen him a few times before, always buried in his laptop, always ordering black coffee, no sugar. They had exchanged a few polite nods, but today was different.
+
+“Mind if I sit here?” he asked, holding up his cup. The café was packed, and her table was the only one with an empty chair.
+
+Mia hesitated, then smiled. “Sure.”
+
+They started with small talk—coffee preferences, favorite books, the Valentine’s Day madness around them. But soon, their conversation took a turn. Daniel confessed that he was new in town, a software developer who had moved here for work. Mia, a budding writer, shared her love for stories and how she found inspiration in the café’s cozy corners.
+
+“You know,” Daniel said after a pause, “I was hoping I’d run into you again. I see you here often, always lost in your own world.”
+
+Mia blushed. “And I thought I was the one people-watching.”
+
+He chuckled. “Maybe we were both watching each other.”
+
+As the evening wore on, they lost track of time, the outside world fading into the background. When the café owner, Mrs. Rossi, walked over and placed two heart-shaped cookies on their table, she winked and said, “On the house. For the couple who just met but already looks like they’ve known each other forever.”
+
+Mia and Daniel exchanged glances, both laughing. Maybe, just maybe, this wasn’t just another Valentine’s Day after all.
+
+And as they clinked their coffee cups together, something told them this was the start of a love story worth writing. ✨<br><br>
+            As the days went by, the story of their kindness spread like wildfire, touching hearts near and far. One day, amidst all the joy, a question arose, one that could change everything: 
+            <br><br>
+            <strong>Will you be my Valentine, <span id="valentine-name"></span>? ❤️</strong>
+        </p>
+        <div id="buttons">
+            <button class="btn" id="yesBtn" onclick="handleYes()">Yes</button>
+            <button class="btn" id="noBtn" onclick="handleNo()">No</button>
+        </div>
+    </div>
+
+    <div id="response-section" style="display: none;">
+        <h1>Why me, <span id="valentine-name-2"></span>? 🤔</h1>
+        <form id="response-form">
+            <textarea id="reason" placeholder="Because..."></textarea><br>
+            <button class="btn" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        let userName;
+
+        function startStory() {
+            userName = document.getElementById("user-name-input").value;
+            if (!userName) {
+                alert("Please enter your name!");
+                return;
+            }
+
+            // Set the user's name in the story and question
+            document.getElementById("user-name").innerText = userName;
+            document.getElementById("valentine-name").innerText = userName;
+            document.getElementById("valentine-name-2").innerText = userName;
+
+            // Hide name page and show story page
+            document.getElementById("name-page").style.display = "none";
+            document.getElementById("story-page").style.display = "block";
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const responseForm = document.getElementById("response-form");
+
+            responseForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+                const reason = document.getElementById("reason").value;
+
+                if (reason.trim() === "") {
+                    alert("Please write something before submitting! 😊");
+                    return;
+                }
+
+                sendResponse(userName, reason);
+
+                document.getElementById("response-section").innerHTML = `
+                    <h1>Sorry, I am taken! 😜</h1>
+                    <p>Maybe next year, ${userName}! 💔</p>
+                `;
+            });
+        });
+
+        function handleYes() {
+            // Hide the buttons after clicking Yes
+            document.getElementById("buttons").style.display = "none";
+
+            // Remove the story section after Yes
+            document.getElementById("story-page").style.display = "none";
+            document.getElementById("response-section").style.display = "block";
+
+            // Remove all the extra Yes buttons if they exist
+            document.querySelectorAll(".extra-yes").forEach(btn => btn.remove());
+        }
+
+        function handleNo() {
+            const yesBtn = document.createElement("button");
+            yesBtn.className = "btn extra-yes";
+            yesBtn.textContent = "Yes";
+            yesBtn.style.position = "absolute";
+            yesBtn.style.left = `${Math.random() * (window.innerWidth - 100)}px`;
+            yesBtn.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
+            yesBtn.onclick = handleYes;
+            document.body.appendChild(yesBtn);
+        }
+
+        function sendResponse(name, message) {
+            // Use Formspree as a better alternative
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("message", message);
+
+            fetch("https://formspree.io/f/xrbeaono", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Your message has been sent successfully!");
+                } else {
+                    alert("Something went wrong. Try again!");
+                }
+            })
+            .catch(error => {
+                console.error("Error submitting form:", error);
+                alert("There was an error. Please try again.");
+            });
+        }
+    </script>
+
+</body>
+</html>
